@@ -10,69 +10,54 @@ import (
 func createCrew() (*multiagent.Crew, error) {
 	crew := multiagent.NewCrew()
 
-	agent1Name := "Agent1"
-	agent2Name := "Agent2"
-
-	task1Name := "Task1"
-	task2Name := "Task2"
-	task3Name := "Task3"
-	task4Name := "Task4"
-	task5Name := "Task5"
-
-	crew.AddAgent(&multiagent.Agent{
-		Name: agent1Name,
-		Function: func(input string, tasks []*multiagent.Task) string {
-			time.Sleep(1 * time.Second)
-			return "Processed by Agent1: " + input
+	agents := []struct {
+		Name     string
+		Function func(input string, tasks []*multiagent.Task) string
+	}{
+		{
+			Name: "Agent1",
+			Function: func(input string, tasks []*multiagent.Task) string {
+				time.Sleep(1 * time.Second)
+				return "Processed by Agent1: " + input
+			},
 		},
-	})
-
-	crew.AddAgent(&multiagent.Agent{
-		Name: agent2Name,
-		Function: func(input string, tasks []*multiagent.Task) string {
-			time.Sleep(2 * time.Second)
-			return "Processed by Agent2: " + input
+		{
+			Name: "Agent2",
+			Function: func(input string, tasks []*multiagent.Task) string {
+				time.Sleep(2 * time.Second)
+				return "Processed by Agent2: " + input
+			},
 		},
-	})
-
-	task1 := &multiagent.Task{
-		Name:        task1Name,
-		Description: "Data for Task1",
-	}
-	if err := crew.AddTask(task1, agent1Name, []string{}); err != nil {
-		return nil, fmt.Errorf("error adding Task1: %v", err)
 	}
 
-	task2 := &multiagent.Task{
-		Name:        task2Name,
-		Description: "Data for Task2",
-	}
-	if err := crew.AddTask(task2, agent2Name, []string{}); err != nil {
-		return nil, fmt.Errorf("error adding Task2: %v", err)
-	}
-
-	task3 := &multiagent.Task{
-		Name:        task3Name,
-		Description: "Data for Task3",
-	}
-	if err := crew.AddTask(task3, agent2Name, []string{}); err != nil {
-		return nil, fmt.Errorf("error adding Task3: %v", err)
+	for _, agent := range agents {
+		crew.AddAgent(&multiagent.Agent{
+			Name:     agent.Name,
+			Function: agent.Function,
+		})
 	}
 
-	task4 := &multiagent.Task{
-		Name:        task4Name,
-		Description: "Data for Task4",
-	}
-	if err := crew.AddTask(task4, agent1Name, []string{task1Name, task2Name}); err != nil {
-		return nil, fmt.Errorf("error adding Task4: %v", err)
+	tasks := []struct {
+		Name         string
+		Description  string
+		AgentName    string
+		Dependencies []string
+	}{
+		{"Task1", "Data for Task1", "Agent1", []string{}},
+		{"Task2", "Data for Task2", "Agent2", []string{}},
+		{"Task3", "Data for Task3", "Agent2", []string{}},
+		{"Task4", "Data for Task4", "Agent1", []string{"Task1", "Task2"}},
+		{"Task5", "Data for Task5", "Agent1", []string{"Task3", "Task4"}},
 	}
 
-	task5 := &multiagent.Task{
-		Name:        task5Name,
-		Description: "Data for Task5",
-	}
-	if err := crew.AddTask(task5, agent1Name, []string{task3Name, task4Name}); err != nil {
-		return nil, fmt.Errorf("error adding Task5: %v", err)
+	for _, task := range tasks {
+		t := &multiagent.Task{
+			Name:        task.Name,
+			Description: task.Description,
+		}
+		if err := crew.AddTask(t, task.AgentName, task.Dependencies); err != nil {
+			return nil, fmt.Errorf("error adding %s: %v", task.Name, err)
+		}
 	}
 
 	return crew, nil
