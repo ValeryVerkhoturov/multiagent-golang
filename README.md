@@ -2,6 +2,12 @@
 
 ![](/pic/paper.jpg)
 
+## Installation
+
+```shell
+go get -u github.com/ValeryVerkhoturov/multiagent-golang
+```
+
 ## Example 
 
 ### Code
