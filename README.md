@@ -1,7 +1,5 @@
 # Multi-agents framework for LLM based on layered communication
 
-![](/pic/paper.jpg)
-
 ## Installation
 
 ```shell
@@ -125,4 +123,9 @@ Task5 output: Processed by Agent1: Data for Task5
 Task1 output: Processed by Agent1: Data for Task1
 Task2 output: Processed by Agent2: Data for Task2
 ```
+
+## Paper
+
+![](/pic/paper.jpg)
+
 
