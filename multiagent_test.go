@@ -17,12 +17,12 @@ func TestCrewExecution(t *testing.T) {
 	agent := &Agent{Name: "Agent1", Function: agentFunc}
 	crew.AddAgent(agent)
 
-	// Create tasks
+	// Create Tasks
 	task1 := &Task{Name: "Task1", Description: "First Task"}
 	task2 := &Task{Name: "Task2", Description: "Second Task"}
 	task3 := &Task{Name: "Task3", Description: "Third Task"}
 
-	// Add tasks to the crew with dependencies
+	// Add Tasks to the crew with dependencies
 	if err := crew.AddTask(task1, "Agent1", nil); err != nil {
 		t.Fatalf("Failed to add Task1: %v", err)
 	}
@@ -33,7 +33,7 @@ func TestCrewExecution(t *testing.T) {
 		t.Fatalf("Failed to add Task3: %v", err)
 	}
 
-	// Execute all tasks
+	// Execute all Tasks
 	crew.Kickoff()
 
 	// Validate execution order
